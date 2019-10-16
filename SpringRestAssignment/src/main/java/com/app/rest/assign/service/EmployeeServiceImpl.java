@@ -9,7 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.rest.assign.model.Employee;
+import com.app.rest.assign.model.Salary;
+import com.app.rest.assign.model.TechnicalSkill;
 import com.app.rest.assign.repository.EmployeeRepository;
+import com.app.rest.assign.repository.SalaryRepository;
+import com.app.rest.assign.repository.SkillRepository;
 
 @Service
 @Transactional
@@ -17,9 +21,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+	
+	@Autowired
+	private SalaryRepository salaryRepository;
+	
+	@Autowired
+	private SkillRepository skillRepository;
 
 	@Override
 	public Employee enrollEmployee(Employee employee) {
+		Salary salary = salaryRepository.save(employee.getSalary());
+		employee.setSalary(salary);
 		return employeeRepository.save(employee);
 	}
 
@@ -40,7 +52,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public List<Employee> getEmpolyeeInDepartment(Integer departmentId) {
 		return employeeRepository.findEmployeesInDepartment(departmentId);
-
 	}
 
 	@Override
@@ -61,8 +72,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public void deleteEmployee(Integer employeeId) {
+	public String deleteEmployee(Integer employeeId) {
 		employeeRepository.deleteById(employeeId);
+		return "Employee Deleted";
 	}
 
+	@Override
+	public Salary getSalaryOfEmployee(Integer employeeId) {
+		return employeeRepository.getSalaryOfEmployee(employeeId);
+	}
+
+	@Override
+	public List<TechnicalSkill> getSkillsOfEmployee(Integer employeeId) {
+		return skillRepository.getTechnicalSkillOfEmployee(employeeId);
+	}
+
+	@Override
+	public TechnicalSkill addTechnicalSkill(TechnicalSkill skill) {
+		return skillRepository.save(skill);
+	}
 }

@@ -1,5 +1,7 @@
 package com.app.rest.assign.service;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import com.app.rest.assign.repository.DepartmentRepository;
 @Service
 @Transactional
 public class DepartmentServiceImpl implements DepartmentService {
-	
+
 	@Autowired
 	private DepartmentRepository departmentRepository;
 
@@ -22,7 +24,11 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 	@Override
 	public Department getDepartmentById(Integer departmentId) {
-		return departmentRepository.findById(departmentId).get();
+		Optional<Department> deptOptional = departmentRepository.findById(departmentId);
+		if (deptOptional.isPresent())
+			return deptOptional.get();
+		else
+			return null;
 	}
 
 }
